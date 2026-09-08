@@ -1,0 +1,23 @@
+Landslide4Sense Threshold Evaluation
+============================================================
+
+Threshold: 0.20 | Dice: 0.7522 | IoU: 0.6028 | Precision: 0.7329 | Recall: 0.7725
+Threshold: 0.25 | Dice: 0.7527 | IoU: 0.6034 | Precision: 0.7416 | Recall: 0.7641
+Threshold: 0.30 | Dice: 0.7526 | IoU: 0.6034 | Precision: 0.7486 | Recall: 0.7567
+Threshold: 0.35 | Dice: 0.7524 | IoU: 0.6031 | Precision: 0.7549 | Recall: 0.7499
+Threshold: 0.40 | Dice: 0.7521 | IoU: 0.6027 | Precision: 0.7607 | Recall: 0.7436
+Threshold: 0.45 | Dice: 0.7516 | IoU: 0.6020 | Precision: 0.7663 | Recall: 0.7374
+Threshold: 0.50 | Dice: 0.7509 | IoU: 0.6012 | Precision: 0.7718 | Recall: 0.7312
+Threshold: 0.55 | Dice: 0.7503 | IoU: 0.6004 | Precision: 0.7771 | Recall: 0.7252
+Threshold: 0.60 | Dice: 0.7491 | IoU: 0.5989 | Precision: 0.7825 | Recall: 0.7184
+Threshold: 0.65 | Dice: 0.7476 | IoU: 0.5969 | Precision: 0.7879 | Recall: 0.7112
+Threshold: 0.70 | Dice: 0.7460 | IoU: 0.5949 | Precision: 0.7938 | Recall: 0.7036
+Threshold: 0.75 | Dice: 0.7438 | IoU: 0.5922 | Precision: 0.8002 | Recall: 0.6949
+Threshold: 0.80 | Dice: 0.7409 | IoU: 0.5884 | Precision: 0.8076 | Recall: 0.6843
+
+BEST THRESHOLD
+Threshold: 0.25
+Dice: 0.7527
+IoU: 0.6034
+Precision: 0.7416
+Recall: 0.7641

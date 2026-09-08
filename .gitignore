@@ -1,0 +1,33 @@
+# Dataset
+TrainData/
+*.h5
+
+# Trained model checkpoints
+*.pth
+*.pt
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landslide AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f7f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .container {
+            width: 900px;
+            max-width: 100%;
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed #888;
+            border-radius: 14px;
+            padding: 45px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-box:hover {
+            background: #f8f8f8;
+        }
+
+        .upload-box input {
+            display: none;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #fileName {
+            color: #555;
+            font-size: 14px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #222;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .result h2 {
+            margin-bottom: 20px;
+        }
+
+        .status {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .detected {
+            background: #ffe5e5;
+        }
+
+        .safe {
+            background: #e5f7e8;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌍 Landslide AI</h1>
+
+    <p class="subtitle">
+        AI-powered landslide detection using satellite imagery
+    </p>
+
+    <label class="upload-box">
+        <input type="file" id="fileInput" accept=".h5">
+        <div class="upload-text">
+            📁 Click to upload Landslide4Sense H5 file
+        </div>
+        <div id="fileName">
+            No file selected
+        </div>
+    </label>
+
+    <button id="predictBtn" disabled>
+        Analyze Image
+    </button>
+
+    <div id="loading">
+        ⏳ Running AI prediction... Please wait.
+    </div>
+
+    <div class="result" id="result">
+
+        <h2>Prediction Result</h2>
+
+        <div class="status" id="status"></div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Risk Level</h3>
+                <p id="risk">-</p>
+            </div>
+
+            <div class="card">
+                <h3>Maximum Probability</h3>
+                <p id="maxProbability">-</p>
+            </div>
+
+            <div class="card">
+                <h3>Landslide Pixels</h3>
+                <p id="pixels">-</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const fileInput = document.getElementById("fileInput");
+    const fileName = document.getElementById("fileName");
+    const predictBtn = document.getElementById("predictBtn");
+    const loading = document.getElementById("loading");
+    const result = document.getElementById("result");
+
+    fileInput.addEventListener("change", () => {
+
+        if (fileInput.files.length > 0) {
+
+            fileName.textContent = fileInput.files[0].name;
+            predictBtn.disabled = false;
+
+        } else {
+
+            fileName.textContent = "No file selected";
+            predictBtn.disabled = true;
+
+        }
+
+    });
+
+    predictBtn.addEventListener("click", async () => {
+
+        const file = fileInput.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        predictBtn.disabled = true;
+        loading.style.display = "block";
+        result.style.display = "none";
+
+        try {
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || "Prediction failed");
+            }
+
+            result.style.display = "block";
+
+            const status = document.getElementById("status");
+
+            if (data.landslide_detected) {
+
+                status.textContent = "⚠️ LANDSLIDE DETECTED";
+                status.className = "status detected";
+
+            } else {
+
+                status.textContent = "✅ NO LANDSLIDE DETECTED";
+                status.className = "status safe";
+
+            }
+
+            document.getElementById("risk").textContent =
+                data.risk_level;
+
+            document.getElementById("maxProbability").textContent =
+                (data.max_probability * 100).toFixed(2) + "%";
+
+            document.getElementById("pixels").textContent =
+                data.predicted_landslide_pixels;
+
+        } catch (error) {
+
+            alert("Error: " + error.message);
+
+        } finally {
+
+            loading.style.display = "none";
+            predictBtn.disabled = false;
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
